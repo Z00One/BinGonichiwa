@@ -17,7 +17,12 @@
 </head>
 
 <style>
+    * {
+        letter-spacing: 0.05em;
+    }
+
     body {
         margin: 0;
+        background-color: #fefefe;
     }
 </style>
