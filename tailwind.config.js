@@ -1,4 +1,3 @@
-import defaultTheme from "tailwindcss/defaultTheme";
 import forms from "@tailwindcss/forms";
 import typography from "@tailwindcss/typography";
 
@@ -14,8 +13,11 @@ export default {
     theme: {
         extend: {
             colors: {
-                "my-font-color": "#232323",
-                "my-green": "#61A948",
+                myFontColor: "#232323",
+                myGreen: "#61A948",
+            },
+            fontFamily: {
+                sans: ["Orbitron", "Roboto", "Noto Sans KR", "sans-serif"],
             },
         },
     },
