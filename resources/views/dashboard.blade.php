@@ -1,15 +1,27 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <x-welcome />
-            </div>
+    <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
+        <div class="w-full sm:w-screen-lg py-2 mt-16 overflow-hidden">
+            @auth
+            @else
+                <div class="text-center leading-10 px-5">
+                    <p class="text-2xl font-medium text-myFontColor">
+                        {{ __('messages.dashboard.first') }}
+                    </p>
+                    <p class="mt-7 text-2xl font-medium text-myFontColor">
+                        {{ __('messages.dashboard.second') }}
+                    </p>
+                    <p class="mt-7 text-2xl font-medium text-myFontColor">
+                        {{ __('messages.dashboard.third') }} 😊
+                    </p>
+                    <div class="mt-10">
+                        <a href="{{ route('login') }}">
+                            <x-button class="ms-4">
+                                {{ 'LogIn' }}
+                            </x-button>
+                        </a>
+                    </div>
+                </div>
+            @endauth
         </div>
     </div>
 </x-app-layout>
