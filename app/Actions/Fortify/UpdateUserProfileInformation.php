@@ -19,13 +19,11 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     {
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
+            'email' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
+        ], [
+            // 'email' 필드의 'unique' 규칙에 해당하는 오류 메시지 설정
+            'email.unique' => __('messages.validation.id.unique'),
         ])->validateWithBag('updateProfileInformation');
-
-        if (isset($input['photo'])) {
-            $user->updateProfilePhoto($input['photo']);
-        }
 
         if ($input['email'] !== $user->email &&
             $user instanceof MustVerifyEmail) {
