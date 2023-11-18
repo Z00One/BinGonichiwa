@@ -1,16 +1,20 @@
 <?php
 return [
     'language' => 'Set To Eng',
-    'logout' => 'ログアウトしますか？',
     'dashboard' => [
         'first' => 'BinGonichiwaへようこそ。',
         'second' => 'このサービスは他の人と簡単にビンゴゲームができます。',
         'third' => 'ログインして楽しんでみませんか。',
     ],
     'auth' => [
+        'logout' => 'ログアウトしますか？',
+        'login' => 'ログイン',
+        'password' => 'パスワード',
         'error' => '問題が発生しました。',
         'register' => '登録',
         'already_registered' => 'すでに登録済みです',
+        'name' => '名前',
+        'confirm_password' => 'パスワードの確認',
     ],
     'profile' => [
         'saved' => '保存しました。',
@@ -41,13 +45,16 @@ return [
             ],
         ],
     ],
+    'validation' => [
+        'id' => [
+            'unique' => 'このIDは既に使用されています。',
+        ],
+        'password' => [
+            'confirmed' => '入力されたパスワードは確認用のパスワードと一致しません',
+            'match' => '入力されたパスワードは現在のパスワードと一致しません'
+        ],
+    ],
+    'custom_password_messages' => [
+        'default' => ':attributeは少なくとも:length文字です。',
+    ],
 ];
-
-// messages.Set To Eng
-// __('BinGonichiwaへようこそ。') }}
-// </p>
-// <p class="mt-7 text-2xl font-medium text-myFontColor">
-//     {{ __('このサービスは他の人と簡単にビンゴゲームができます。') }}
-// </p>
-// <p class="mt-7 text-2xl font-medium text-myFontColor">
-//     {{ __('ログインして楽しんでみませんか。'

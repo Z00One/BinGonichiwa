@@ -1,16 +1,20 @@
 <?php
 return [
     'language' => 'Set To Jpn',
-    'logout' => 'Are you sure logout？',
     'dashboard' => [
         'first' => 'Welcome to BinGonichiwa.',
         'second' => 'This service allows you to easily play bingo with other people.',
         'third' => 'LogIn and enjoy.',
     ],
     'auth' => [
+        'logout' => 'Are you sure logout？',
+        'login' => 'Login',
+        'password' => 'Password',
         'error' => 'Whoops! Something went wrong.',
         'register' => 'Register',
         'already_registered' => 'Already registered?',
+        'name' => 'Name',
+        'confirm_password' => 'Confirm Password',
     ],
     'profile' => [
         'saved' => 'Saved',
@@ -31,7 +35,7 @@ return [
         'delete_account' => [
             'title' => 'Delete Account',
             'description' => 'Permanently delete your account.',
-            'content' => 'Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.',
+            'content' => 'Once your account is deleted, all of its resources and data will be permanently deleted.',
             'delete_account_button' => 'Delete Account',
             'cancel' => 'Cancel',
             'modal' => [
@@ -40,5 +44,17 @@ return [
                 'input_placehorder' => 'Password',
             ]
         ],
+    ],
+    'validation' => [
+        'id' => [
+            'unique' => 'The ID has already been taken.',
+        ],
+        'password' => [
+            'confirmed' => 'The password confirmation does not match.',
+            'match' => 'The provided password does not match your current password.'
+        ],
+    ],
+    'custom_password_messages' => [
+        'default' => 'The :attribute must be at least :length characters.',
     ],
 ];
