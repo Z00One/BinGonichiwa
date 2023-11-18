@@ -1,6 +1,7 @@
-<svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="2" y="5.05957" width="14.7018" height="14.6866" rx="1" stroke="#232323" stroke-width="3" stroke-linecap="round"/>
-<rect x="2" y="28.3132" width="14.7018" height="14.6866" rx="1" stroke="#232323" stroke-width="3" stroke-linecap="round"/>
-<rect width="14.6938" height="14.6945" rx="1" transform="matrix(0.689992 0.723817 -0.72453 0.689243 32.8613 2)" fill="#61A948" stroke="#232323" stroke-width="3" stroke-linecap="round"/>
-<rect x="25.2783" y="28.3132" width="14.7018" height="14.6866" rx="1" stroke="#232323" stroke-width="3" stroke-linecap="round"/>
+<svg width="55" height="55" viewBox="0 0 55 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="55" height="55" rx="10" fill="white"/>
+<rect x="8" y="9.05957" width="14.7018" height="14.6866" rx="1" stroke="#232323" stroke-width="3" stroke-linecap="round"/>
+<rect x="8" y="32.3132" width="14.7018" height="14.6866" rx="1" stroke="#232323" stroke-width="3" stroke-linecap="round"/>
+<rect width="14.6938" height="14.6945" rx="1" transform="matrix(0.689992 0.723817 -0.72453 0.689243 38.8613 6)" fill="#61A948" stroke="#232323" stroke-width="3" stroke-linecap="round"/>
+<rect x="31.2783" y="32.3132" width="14.7018" height="14.6866" rx="1" stroke="#232323" stroke-width="3" stroke-linecap="round"/>
 </svg>
