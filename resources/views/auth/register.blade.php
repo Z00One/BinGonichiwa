@@ -6,25 +6,25 @@
             @csrf
 
             <div>
-                <x-label for="name" value="{{ __('Name') }}" />
+                <x-label for="name" value="{{ __('messages.auth.name') }}" />
                 <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required
                     autofocus autocomplete="name" />
             </div>
 
             <div class="mt-4">
-                <x-label for="email" value="{{ __('ID') }}" />
+                <x-label for="email" value="ID" />
                 <x-input id="email" class="block mt-1 w-full" type="text" name="email" :value="old('email')"
                     required autocomplete="email" />
             </div>
 
             <div class="mt-4">
-                <x-label for="password" value="{{ __('Password') }}" />
+                <x-label for="password" value="{{ __('messages.auth.password') }}" />
                 <x-input id="password" class="block mt-1 w-full" type="password" name="password" required
                     autocomplete="new-password" />
             </div>
 
             <div class="mt-4">
-                <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
+                <x-label for="password_confirmation" value="{{ __('messages.auth.confirm_password') }}" />
                 <x-input id="password_confirmation" class="block mt-1 w-full" type="password"
                     name="password_confirmation" required autocomplete="new-password" />
             </div>
@@ -36,7 +36,7 @@
                 </a>
 
                 <x-button class="ms-4">
-                    Register
+                    {{ __('messages.auth.register') }}
                 </x-button>
             </div>
         </form>

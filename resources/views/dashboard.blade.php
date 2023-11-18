@@ -16,7 +16,7 @@
                     <div class="mt-10">
                         <a href="{{ route('login') }}">
                             <x-button class="ms-4">
-                                {{ 'LogIn' }}
+                                {{ __('messages.auth.login') }}
                             </x-button>
                         </a>
                     </div>
