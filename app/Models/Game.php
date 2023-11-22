@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Record;
 
 class Game extends Model
 {
@@ -15,8 +14,13 @@ class Game extends Model
         'loser_id',
     ];
 
-    public function records()
+    public function winner()
     {
-        return $this->hasOne(Record::class);
+        return $this->belongsTo(User::class, 'winner_id');
+    }
+
+    public function loser()
+    {
+        return $this->belongsTo(User::class, 'loser_id');
     }
 }
