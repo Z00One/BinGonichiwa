@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
-use App\Models\Record;
+use App\Models\Game;
 
 class User extends Authenticatable
 {
@@ -39,8 +39,14 @@ class User extends Authenticatable
         'two_factor_secret',
     ];
 
-    public function records()
+    
+    public function wins()
     {
-        return $this->hasMany(Record::class);
+        return $this->hasMany(Game::class, 'winner_id');
+    }
+    
+    public function loses()
+    {
+        return $this->hasMany(Game::class, 'loser_id');
     }
 }
