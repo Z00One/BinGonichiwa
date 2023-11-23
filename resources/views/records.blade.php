@@ -1,5 +1,4 @@
 <x-app-layout>
-    {{-- TODO: 페이지네이션 --}}
     <style>
         .wave_before {
             content: "";
