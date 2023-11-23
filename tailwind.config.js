@@ -15,6 +15,7 @@ export default {
             colors: {
                 myFontColor: "#232323",
                 myGreen: "#61A948",
+                myRed: "#DF5A5A",
             },
             fontFamily: {
                 sans: ["Orbitron", "Roboto", "Noto Sans KR", "sans-serif"],
