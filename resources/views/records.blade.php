@@ -45,7 +45,7 @@
                 <div class="wave_after"></div>
                 <div class="absolute top-0 left-0 w-full h-full flex justify-center items-center text-center sm:text-lg">
                     {{ __('messages.records.winning_rate') }}
-                    <br /> {{ $user['winningRate'] . '%' }}
+                    <br /> {{ $user['winningRate'] == 0 ? 'N/A' : $user['winningRate'] . '%' }}
                 </div>
             </div>
 
@@ -64,52 +64,62 @@
             </div>
         </div>
 
-        <div class="rounded-lg border border-gray-200 mt-8 overflow-hidden text-center text-xs sm:text-sm">
-            <table class="min-w-full bg-white">
-                <thead>
-                    <tr class="rounded-sm border-gray-200 bg-gray-50 text-gray-500 uppercase">
-                        <th class="px-1 py-2 border-b border-gray-200 font-medium" style="width: 30%">
-                            {{ __('messages.records.opponent') }}
-                        </th>
-                        <th class="px-1 py-2 border-b border-gray-200 bg-gray-50 font-medium" style="width: 30%">
-                            {{ __('messages.records.result') }}
-                        </th>
-                        <th class="px-1 py-2 border-b border-gray-200 bg-gray-50 font-medium" style="width: 40%">
-                            {{ __('messages.records.time') }}
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($records as $record)
-                        <tr class="text-myFontColor hover:text-black">
-                            <td class="py-2 whitespace-no-wrap border-b border-gray-200">
-                                @if ($record->opponent == null)
-                                    <a>{{ __('messages.records.withdrawal') }}</a>
-                                @else
-                                    <a href="{{ url('/records/' . $record->opponent) }}">{{ $record->opponent }}</a>
-                                @endif
-                            </td>
-                            <td class="py-2 whitespace-no-wrap border-b border-gray-200">
-                                {{ $record->isWin ? __('messages.records.win') : __('messages.records.lose') }}
-                            </td>
-                            <td class="py-2 whitespace-no-wrap border-b border-gray-200">
-                                {{ $record->created_at }}
-                            </td>
+        @if (count($records) == 0)
+            <div class="py-2 border-b border-gray-200　text-center mt-8">
+                {{ __('messages.records.no_records') }}
+            </div>
+        @else
+            <div class="rounded-lg border border-gray-200 mt-8 overflow-hidden text-center text-xs sm:text-sm">
+                <table class="min-w-full bg-white">
+                    <thead>
+                        <tr class="rounded-sm border-gray-200 bg-gray-50 text-gray-500 uppercase">
+                            <th class="px-1 py-2 border-b border-gray-200 font-medium" style="width: 30%">
+                                {{ __('messages.records.opponent') }}
+                            </th>
+                            <th class="px-1 py-2 border-b border-gray-200 bg-gray-50 font-medium" style="width: 30%">
+                                {{ __('messages.records.result') }}
+                            </th>
+                            <th class="px-1 py-2 border-b border-gray-200 bg-gray-50 font-medium" style="width: 40%">
+                                {{ __('messages.records.time') }}
+                            </th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        @foreach ($records as $record)
+                            <tr class="text-myFontColor hover:text-black">
+                                <td class="py-2 whitespace-no-wrap border-b border-gray-200">
+                                    @if ($record->opponent == null)
+                                        <a>{{ __('messages.records.withdrawal') }}</a>
+                                    @else
+                                        <a
+                                            href="{{ url('/records/' . $record->opponent) }}">{{ $record->opponent }}</a>
+                                    @endif
+                                </td>
+                                <td class="py-2 whitespace-no-wrap border-b border-gray-200">
+                                    {{ $record->isWin ? __('messages.records.win') : __('messages.records.lose') }}
+                                </td>
+                                <td class="py-2 whitespace-no-wrap border-b border-gray-200">
+                                    {{ $record->created_at }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
 
-        <div class="flex justify-center text-center py-2 mt-2 text-gray-400 text-xs sm:text-sm">
+        <div class="flex justify-center text-center py-2 mt-4 text-gray-400 text-xs sm:text-sm">
             @if ($records->hasPages())
                 @if (!$records->onFirstPage())
-                    <a class="mr-5 text-gray-400 hover:text-myFontColor focus:outline-none transition ease-in-out duration-150"
+                    <a class="text-gray-400 hover:text-myFontColor focus:outline-none transition ease-in-out duration-150"
                         href="{{ $records->previousPageUrl() }}" rel="prev">
                         {{ __('messages.records.page_prev') }}
                     </a>
                 @endif
                 @if ($records->hasMorePages())
+                    @if (!$records->onFirstPage())
+                        <span class="mx-4 text-myFontColor">|</span>
+                    @endif
                     <a class=" text-gray-400 hover:text-myFontColor focus:outline-none transition ease-in-out duration-150"
                         href="{{ $records->nextPageUrl() }}" rel="next">
                         {{ __('messages.records.page_next') }}
