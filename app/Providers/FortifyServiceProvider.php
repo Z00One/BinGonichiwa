@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
-use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
-use App\Http\Responses\LoginResponse;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -38,7 +36,5 @@ class FortifyServiceProvider extends ServiceProvider
             
             return Limit::perMinute(5)->by($throttleKey);
         });
-
-        $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
     }
 }
