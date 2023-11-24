@@ -78,7 +78,9 @@ class GameController extends Controller
 
         $winCount = $user->wins()->count();
         $loseCount = $user->loses()->count();
-        $winningRate = ($winCount / ($winCount + $loseCount)) * 100;
+        $winningRate = ($winCount + $loseCount) 
+            ? ($winCount / ($winCount + $loseCount)) * 100
+            : 0;
         $winningRate = number_format($winningRate, 2);
 
         return view('records', [
