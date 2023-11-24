@@ -5,7 +5,7 @@
                 $user = Auth::user();
                 $winCount = $user->wins()->count();
                 $loseCount = $user->loses()->count();
-                $winningRate = ($winCount / ($winCount + $loseCount)) * 100 . '%';
+                $winningRate = $winCount + $loseCount ? ($winCount / ($winCount + $loseCount)) * 100 . '%' : 'N/A';
             @endphp
             <p class="mt-7">
                 {{ __('messages.dashboard.winning_rate', ['name' => $user->name]) }}
