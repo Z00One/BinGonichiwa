@@ -111,7 +111,7 @@
         <div class="flex justify-center text-center py-2 mt-4 text-gray-400 text-xs sm:text-sm">
             @if ($records->hasPages())
                 @if (!$records->onFirstPage())
-                    <a class="text-gray-400 hover:text-myFontColor focus:outline-none transition ease-in-out duration-150"
+                    <a class="hover:text-myFontColor focus:outline-none transition ease-in-out duration-150"
                         href="{{ $records->previousPageUrl() }}" rel="prev">
                         {{ __('messages.records.page_prev') }}
                     </a>
@@ -120,7 +120,7 @@
                     @if (!$records->onFirstPage())
                         <span class="mx-4 text-myFontColor">|</span>
                     @endif
-                    <a class=" text-gray-400 hover:text-myFontColor focus:outline-none transition ease-in-out duration-150"
+                    <a class="hover:text-myFontColor focus:outline-none transition ease-in-out duration-150"
                         href="{{ $records->nextPageUrl() }}" rel="next">
                         {{ __('messages.records.page_next') }}
                     </a>
@@ -129,7 +129,7 @@
         </div>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
+        document.addEventListener('DOMContentLoaded', () => {
             const updateWinningRate = () => {
                 const waveBefore = document.querySelector('.wave_before');
                 const waveAfter = document.querySelector('.wave_after');
