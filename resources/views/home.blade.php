@@ -8,28 +8,28 @@
                 $winningRate = $winCount + $loseCount ? ($winCount / ($winCount + $loseCount)) * 100 . '%' : 'N/A';
             @endphp
             <p class="mt-7">
-                {{ __('messages.dashboard.winning_rate', ['name' => $user->name]) }}
+                {{ __('messages.home.winning_rate', ['name' => $user->name]) }}
             </p>
             <p class="mt-5">
                 {{ $winningRate }}
             </p>
             <div class="mt-10">
-                <a href="">
+                <a href="{{ url('waiting') }}">
                     <x-button>
-                        {{ __('messages.dashboard.match') }}
+                        {{ __('messages.home.match') }}
                     </x-button>
                 </a>
             </div>
         @else
             <div>
                 <p>
-                    {{ __('messages.dashboard.first') }}
+                    {{ __('messages.home.first') }}
                 </p>
                 <p class="mt-7">
-                    {{ __('messages.dashboard.second') }}
+                    {{ __('messages.home.second') }}
                 </p>
                 <p class="mt-7">
-                    {{ __('messages.dashboard.third') }} 😊
+                    {{ __('messages.home.third') }} 😊
                 </p>
             </div>
             <div class="mt-10">
