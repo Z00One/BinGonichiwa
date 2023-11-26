@@ -1,10 +1,21 @@
 <?php
 return [
-    'language' => 'Set To Eng',
-    'dashboard' => [
+    'header' => [
+        'language' => 'Set To Eng',
+        'profile' => 'プロフィール',
+        'logout' => 'ログアウト',
+        'record' => '戦績',
+    ],
+    'home' => [
+        'welcome' => "様、ようこそ。",
+        'match' => 'マッチングスタート',
         'first' => 'BinGonichiwaへようこそ。',
         'second' => 'このサービスは他の人と簡単にビンゴゲームができます。',
         'third' => 'ログインして楽しんでみませんか。',
+        'games' => '戦',
+        'wins' => '勝',
+        'loses' => '敗',
+        'winning_rate' => ':name様の勝率',
     ],
     'auth' => [
         'logout' => 'ログアウトしますか？',
@@ -12,9 +23,10 @@ return [
         'password' => 'パスワード',
         'error' => '問題が発生しました。',
         'register' => '登録',
-        'already_registered' => 'すでに登録済みです',
+        'already_registered' => 'すでに登録済みです。',
         'name' => '名前',
         'confirm_password' => 'パスワードの確認',
+        'wrong' => 'この情報は私たちの情報と一致しません。',
     ],
     'profile' => [
         'saved' => '保存しました。',
@@ -41,7 +53,8 @@ return [
                 'content' => '本当にアカウントを削除しますか？ アカウントを削除すると、すべてのリソースとデータが永久に削除されます。 アカウントを永久に削除することを確認するには、パスワードを入力してください。',
                 'input_placehorder' => 'パスワード',
                 'cancel' => 'キャンセル',
-                'delete_account_button' => 'アカウントを削除',
+                'button' => 'アカウントを削除',
+                'wrong' => 'このパスワードは私たちの情報と一致しません。',
             ],
         ],
     ],
@@ -50,11 +63,33 @@ return [
             'unique' => 'このIDは既に使用されています。',
         ],
         'password' => [
-            'confirmed' => '入力されたパスワードは確認用のパスワードと一致しません',
-            'match' => '入力されたパスワードは現在のパスワードと一致しません'
+            'confirmed' => '入力されたパスワードは確認用のパスワードと一致しません。',
+            'match' => '入力されたパスワードは現在のパスワードと一致しません。'
         ],
     ],
     'custom_password_messages' => [
         'default' => ':attributeは少なくとも:length文字です。',
+    ],
+    'records' => [
+        'name' => ' 様の戦績',
+        'win' => '勝',
+        'lose' => '敗',
+        'opponent' => '相手',
+        'result' => '結果',
+        'time' => '時間',
+        'games' => '戦',
+        'winning_rate' => '勝率',
+        'page_prev' => '前へ',
+        'page_next' => '次へ',
+        'withdrawal' => '脱退者',
+        'no_records' => '記録がありません。。。',
+    ],
+    'errors' => [
+        '404' => 'このページはすでに削除されているか、URLが間違っている可能性があります。',
+        'back' => 'トップページへ',
+    ],
+    'waitting' => [
+        'wait' => '相手を探しています。。。',
+        'match_cancel' => 'キャンセル',
     ],
 ];
