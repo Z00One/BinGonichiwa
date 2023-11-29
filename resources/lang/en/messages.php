@@ -86,12 +86,18 @@ return [
     ],
     'errors' => [
         '404' => 'Not Found',
-        'message' => 'to home page',
+        'button' => 'to home page',
     ],
     'waiting' => [
         'wait' => 'Please wait...',
         'match_cancel' => 'Cancel',
         'cancel_confirm' => 'Are you sure you want to cancel?',
-        'start_confirm' => 'The other person has been found. Would you like to start the game?',
+        'start' => 'The other person has been found. Start the game.',
+        'error' => 'An error occurred. Please try again later.',
+    ],
+    'match' => [
+        'users' => 'your board',
+        'opponents' => '\'s board',
+        'submit' => 'Submit',
     ],
 ];
