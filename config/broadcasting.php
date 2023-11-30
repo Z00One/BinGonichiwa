@@ -70,4 +70,13 @@ return [
 
     ],
 
+    'game' => [
+        'game' => env('GAME_GAME', 'game.'),
+        'players' => (int) env('GAME_HEAD_COUNT', 2),
+        'channels' => env('GAME_CHANNELS', 'channels'),
+        'channel' => env('GAME_CHANNEL', 'channel'),
+        'bingos' => env('GAME_BINGOS', 'bingos'),
+        'boardSize' => (int) env('GAME_BOARD_SIZE', 5),
+    ]
+
 ];
