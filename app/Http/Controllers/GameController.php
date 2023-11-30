@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Redis;
 use App\Events\WaitingEvent;
 use Illuminate\Support\Facades\Auth;
+use App\Services\BingoService;
 
 class GameController extends Controller
 {
@@ -18,7 +19,6 @@ class GameController extends Controller
      */
     public function index()
     {
-        // 채널 리스트 가져오기
         $channels = Redis::smembers(config('broadcasting.game.channels'));
         $userId = Auth::user()->id;
         $channel = '';
@@ -35,7 +35,7 @@ class GameController extends Controller
                     $findRoom = true;
                 }
                 
-                elseif (count($room) < 2) {
+                elseif (count($room) < config('broadcasting.game.players')) {
                     array_push($room, $userId);
                     Redis::hmset($channel, $room);
                     $findRoom = true;
@@ -57,7 +57,7 @@ class GameController extends Controller
             }
 
             broadcast(new WaitingEvent([
-                'channel' => $channel,
+                config('broadcasting.game.channel') => $channel,
                 ]));
         } 
         else {
@@ -67,7 +67,7 @@ class GameController extends Controller
         }
 
         return view('waiting', [
-            'channel' => $channel,
+            config('broadcasting.game.channel') => $channel,
             ]);
     }
 
@@ -79,7 +79,7 @@ class GameController extends Controller
     public function leave()
     {
         $userId = Auth::user()->id;
-        $channelName = request()->input('channel');
+        $channelName = request()->input(config('broadcasting.game.channel'));
         $channel = Redis::hgetall($channelName);
         
         foreach ($channel as $user => $id) {
@@ -95,9 +95,34 @@ class GameController extends Controller
     /**
      * Show the form for creating the resource.
      */
-    public function create(String $channel)
+    public function create(BingoService $bingoService, String $channel)
     {
+        $userId = Auth::user()->id;
 
+        $gameChannal = Redis::hgetall($channel);
+
+        if (count($gameChannal) < config('broadcasting.game.players')) {
+            return view('errors.404');
+        }
+
+        // TODO: 본 게임방에 없는 유저가 접근할 시 403 에러를 던져줄 필요가 있음
+        $opponentId = $gameChannal[0] == (string) $userId ? (int) $gameChannal[1] : (int) $gameChannal[0];
+        $opponent = User::find($opponentId)->name;
+        
+        $turn = $gameChannal[0] == (string) $userId ? true : false;
+        $bingoId = $turn ? 0 : 1;
+        $opponentBingoId = $turn ? 1 : 0;
+        
+        $bingosName = str_replace(config('broadcasting.game.game'), config('broadcasting.game.bingos'), $channel);
+        
+        $bingos = Redis::get($bingosName);
+
+        if($bingos === null) {
+            $bingos = $bingoService->createBingoBoards();
+            Redis::set($bingosName, json_encode($bingos));
+        }
+        
+        return view('game', compact('opponent', 'turn', 'bingos', 'bingoId', 'opponentBingoId', 'bingosName'));
     }
 
     /**
@@ -122,32 +147,32 @@ class GameController extends Controller
             return view('errors.404');
         }
 
-        $combinedGamesQuery = Game::where('winner_id', $user->id)
-        ->orWhere('loser_id', $user->id);
-
-        $latestGames = $combinedGamesQuery->orderByDesc('created_at')->paginate(5);
+        $userId = $user->id;
+        
+        $latestGames = Game::has('winner', $userId)->orHas('loser', $userId)->orderByDesc('created_at')->paginate(5);
 
         foreach ($latestGames as $game) {
-            $isWin = $game->winner_id == $user->id;
+            $isWin = $game->winner_id == $userId;
             $game->isWin = $isWin;
             $opponent = $isWin ? $game->loser()->first()?->name : $game->winner()->first()?->name;
             $game->opponent = $opponent;
         }
 
         $winCount = $user->wins()->count();
-        $loseCount = $user->loses()->count();
 
-        $winningRate = ($winCount + $loseCount) 
-            ? ($winCount / ($winCount + $loseCount)) * 100
+        $allGamesCount = Game::has('winner', $userId)->orHas('loser', $userId)->count();
+
+        $winningRate = ($allGamesCount) 
+            ? ($winCount / $allGamesCount) * 100
             : 0;
+        
         $winningRate = number_format($winningRate, 2);
-
+        
         return view('records', [
            'records' => $latestGames,
            'name' => $name,
            'user' => [
                'winCount' => $winCount,
-               'loseCount' => $loseCount,
                'winningRate' => $winningRate,
            ],
         ]);
