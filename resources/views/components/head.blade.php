@@ -24,5 +24,12 @@
     body {
         margin: 0;
         background-color: #fefefe;
+        -ms-overflow-style: none;
+        user-select: none;
+        box-sizing: border-box;
+    }
+
+    ::-webkit-scrollbar {
+        display: none;
     }
 </style>
