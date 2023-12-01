@@ -65,5 +65,8 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'game.check' => \App\Http\Middleware\CheckGameChannelAccess::class,
+        'game.bingo.submit' => \App\Http\Middleware\CheckBingoAccess::class,
+        'user.exists' => \App\Http\Middleware\CheckUserExists::class,
     ];
 }
