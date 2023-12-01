@@ -11,15 +11,16 @@
         <div class="flex items-center">
             @auth
                 <div class="relative w-full" x-data="{ open: false }" @click.away="open = false" @close.stop="open = false">
-                    <div @click="open = ! open">
-                        <button type="button"
-                            class="inline-flex items-center px-3 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-myFontColor focus:outline-none transition ease-in-out duration-150">
-                            <span class="text-xl font-medium" :class="{ 'hidden': open }">☰</span>
-                            <span class="text-xl font-light" :class="{ 'hidden': !open }">x</span>
+                    
+                    <div id="toggle" 
+                        class="inline-flex items-center px-3 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-myFontColor focus:outline-none transition ease-in-out duration-150"
+                        onclick="toggleContent()">
+                        <button type="button" >
+                            <span id="openIcon" class="text-xl font-medium">☰</span>
+                            <span id="closeIcon" class="text-xl font-light" style="display:none">x</span>
                         </button>
                     </div>
-
-                    <div x-show="open" @click="open = false">
+                    <div id="dynamicContent" style="display:none">
                         <div class="rounded-md ring-1 ring-black ring-opacity-5 bg-white text-center"
                             style="position: absolute; left: -98px; top: 3px; min-width: 100px;">
 
@@ -33,9 +34,9 @@
                             
                             <div class="border-t border-gray-200"></div>
                             
-                            @if(url()->current() == url('/') || url()->current() == url('/dashboard'))
+                            @if(url()->current() == url('/'))
                                 <a class="block w-full px-1 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out"
-                                href="{{ (session()->get('locale') === 'en') ? url('/set-language/ja') : url('/set-language/en') }}">
+                                href="{{ (session()->get('locale') === 'en' || session()->get('locale') === null) ? url('/set-language/ja') : url('/set-language/en') }}">
                                 {{{ __('messages.header.language') }}}
                             </a>
                             
@@ -53,9 +54,9 @@
                     </div>
                 </div>
             @else
-            @if(url()->current() == url('/') || url()->current() == url('/dashboard'))
+            @if(url()->current() == url('/'))
                     <a class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-500 hover:text-gray-700 transition duration-150 ease-in-out"
-                        href="{{ (session()->get('locale') === 'en') ? url('/set-language/ja') : url('/set-language/en') }}">
+                        href="{{ (session()->get('locale') === 'en' || session()->get('locale') === null) ?  url('/set-language/ja') : url('/set-language/en') }}">
                         {{ __('messages.header.language') }}
                     </a>
                 @endif
@@ -73,6 +74,22 @@
 
         if (confirmed) {
             document.querySelector('#logout-form').submit();
+        }
+    }
+
+    const toggleContent = () => {
+        const dynamicContent = document.querySelector('#dynamicContent');
+        const openIcon = document.querySelector('#openIcon');
+        const closeIcon = document.querySelector('#closeIcon');
+
+        if (dynamicContent.style.display === 'none') {
+            dynamicContent.style.display = 'block';
+            openIcon.style.display = 'none';
+            closeIcon.style.display = 'inline-block';
+        } else {
+            dynamicContent.style.display = 'none';
+            openIcon.style.display = 'inline-block';
+            closeIcon.style.display = 'none';
         }
     }
 </script>
