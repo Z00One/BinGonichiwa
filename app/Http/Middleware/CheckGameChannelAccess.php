@@ -19,19 +19,19 @@ class CheckGameChannelAccess
     {
         $userId = Auth::user()->id;
         $channelName = $request->route(config('broadcasting.game.channel'));
-        $gameChannal = Redis::hgetall($channelName);
+        $waitingList = Redis::hgetall($channelName);
 
-        if (!$gameChannal) {
+        if (!$waitingList) {
             return view('errors.404');
         }
 
-        if (count($gameChannal) < config('broadcasting.game.players')) {
+        if (count($waitingList) < config('broadcasting.game.players')) {
             return view('errors.404');
         }
 
-        foreach ($gameChannal as $user) {
+        foreach ($waitingList as $user) {
             if ($user === (string) $userId) {
-                $request->merge(['userId' => $userId, config('broadcasting.game.channel') => $channelName, 'gameChannel' => $gameChannal]);
+                $request->merge(['userId' => $userId, config('broadcasting.game.channel') => $channelName, 'waitingList' => array_values($waitingList)]);
                 return $next($request);
             }
         }
