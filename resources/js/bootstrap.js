@@ -26,3 +26,6 @@ window.Echo = new Echo({
     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
     encrypted: true,
 });
+
+import Waiting from "./waiting";
+window.Waiting = new Waiting();
