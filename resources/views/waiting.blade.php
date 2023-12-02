@@ -17,7 +17,14 @@
 
             {{-- Waiting Message --}}
             <div class="mt-10">
-                {{ __('messages.waiting.wait') }}
+                <p>{{ __('messages.waiting.wait') }}
+                <p>
+                <div class="mt-5 text-myRed text-xs sm:text-lg">
+                    <p>📌 {{ __('messages.waiting.caution_first') }}
+                    <p>
+                    <p>{{ __('messages.waiting.caution_second') }}
+                    <p>
+                </div>
             </div>
 
             {{-- Cancel Button --}}
@@ -25,7 +32,7 @@
                 @csrf
                 @method('patch')
                 <input type="hidden" name={{ config('broadcasting.game.channel') }} value="{{ $channel }}">
-                <x-danger-button class="mt-10" onclick="leave()">
+                <x-danger-button class="mt-10" onclick="window.Waiting.leave()">
                     {{ __('messages.waiting.match_cancel') }}
                 </x-danger-button>
             </form>
@@ -36,55 +43,24 @@
     </div>
 
     <script>
-        let channelName;
-        let startFlag = false;
-
-        const start = () => {
-            window.location.pathname = `/games/${channelName}`;
-        }
-
-        const leave = (channelName) => {
-            const flag = window.confirm('{{ __('messages.waiting.cancel_confirm') }}');
-
-            if (flag) {
-                window.Echo.leave(channelName);
-
-                document.querySelector('#leave-form').submit();
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
-            channelName = document.getElementById('channel').getAttribute('x-data');
+            const channel = document.getElementById('channel').getAttribute('x-data');
+            const leaveForm = document.querySelector('#leave-form');
+            const leaveConfirmMessage = '{{ __('messages.waiting.cancel_confirm') }}';
+            const opponentleaveMessage = '{{ __('messages.waiting.opponent_leave') }}';
+            const gameStartMessage = '{{ __('messages.waiting.start') }}';
+            const errorMessage = '{{ __('messages.waiting.error') }}';
+            const playerCount = {{ config('broadcasting.game.players') }};
 
-            console.log(`--${channelName}--`);
-
-            window.Echo.join(channelName)
-                .here((users) => {
-                    if (users.length == {{ config('broadcasting.game.players') }}) {
-                        window.alert('{{ __('messages.waiting.start') }}');
-                        start();
-                    }
-                })
-                .joining((user) => {
-                    window.alert('{{ __('messages.waiting.start') }}');
-                    start();
-                })
-                .error((error) => {
-                    window.alert('{{ __('messages.waiting.error') }}');
-                    leave(channelName);
-                });
-        });
-
-        window.addEventListener('beforeunload', (event) => {
-            event.preventDefault();
-            window.Echo.leave(channelName);
-            leave(channelName);
-        });
-
-        window.addEventListener('unload', (event) => {
-            event.preventDefault();
-            window.Echo.leave(channelName);
-            leave(channelName);
+            window.Waiting.init({
+                channel,
+                leaveForm,
+                leaveConfirmMessage,
+                opponentleaveMessage,
+                gameStartMessage,
+                errorMessage,
+                playerCount,
+            })
         });
     </script>
 </x-game-layout>
