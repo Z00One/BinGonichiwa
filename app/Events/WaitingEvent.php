@@ -21,7 +21,7 @@ class WaitingEvent implements ShouldBroadcast
      */
     public function __construct($data)
     {
-        $this->channel = $data['channel'];
+        $this->channel = $data[config('broadcasting.game.channel')];
     }
 
     /**
@@ -31,13 +31,13 @@ class WaitingEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel($this->channel);
+        return new PresenceChannel($this->channel);
     }
 
     public function broadcastWith()
     {
         return [
-            "channel" => $this->channel,
+            config('broadcasting.game.channel') => $this->channel,
         ];
     }
 }
