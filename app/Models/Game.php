@@ -14,6 +14,8 @@ class Game extends Model
         'loser_id',
     ];
 
+    const UPDATED_AT = null;
+
     public function winner()
     {
         return $this->belongsTo(User::class, 'winner_id');
