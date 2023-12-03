@@ -2,23 +2,38 @@
 
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 
-/*
-|--------------------------------------------------------------------------
-| Broadcast Channels
-|--------------------------------------------------------------------------
-|
-| Here you may register all of the event broadcasting channels that your
-| application supports. The given channel authorization callbacks are
-| used to check if an authenticated user can listen to the channel.
-|
-*/
+Broadcast::channel(config('broadcasting.game.waiting') . '{channelName}', function ($channelName) {
+    $userId = Auth::user()->id;
+    $waitingChannal = Redis::hgetall($channelName);
+    
+    if (count($waitingChannal) < config('broadcasting.game.players')) {
+        return [
+            'userId' => $userId,
+        ];
+    }
 
-Broadcast::channel(config('broadcasting.game.game') . '{roomId}', function ($roomId) {
+    return false;
+});
+
+Broadcast::channel(config('broadcasting.game.game') . '{channelName}', function ($channelName) {
+    $userId = Auth::user()->id;
+    $waitingList = Redis::hgetall($channelName);
     return [
-        'userId' => Auth::user()->id,
-        'roomId' => $roomId
+        'userId' => $userId,
+        'waitingList' => $waitingList
     ];
     
-    return false; // 사용자가 인증되지 않았거나 채널에 참여할 수 없는 경우 false를 반환합니다.
+    if (count($waitingList) < config('broadcasting.game.players')) {
+        foreach ($waitingList as $user) {
+            if ($user === (string) $userId) {
+                return [
+                    'userId' => $userId,
+                ];
+            }
+        }
+    }
+
+    return false;
 });
