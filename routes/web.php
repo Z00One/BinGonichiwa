@@ -16,7 +16,8 @@ Route::middleware([
 ])->group(function () {
     Route::get('/waiting', [GameController::class, 'index']);
     Route::patch('waiting/leave', [GameController::class, 'leave']);
-    Route::get('/games/{channel}', [GameController::class, 'create']);
+    Route::get('/games/{channel}', [GameController::class, 'create'])->middleware(['game.check']);
+    Route::post('/games/bingos/{channel}', [GameController::class, 'bingoValueSubmit'])->middleware(['game.bingo.submit']);
 });
 
 
@@ -30,5 +31,5 @@ Route::get('/set-language/{lang}', function ($lang) {
     return redirect()->back();
 });
 
-Route::get('records/{name}', [GameController::class, 'record']);
+Route::get('records/{name}', [GameController::class, 'record'])->middleware(['user.exists']);
 
