@@ -29,3 +29,6 @@ window.Echo = new Echo({
 
 import Waiting from "./waiting";
 window.Waiting = new Waiting();
+
+import Game from "./game";
+window.Game = new Game();
