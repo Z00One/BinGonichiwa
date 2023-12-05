@@ -12,6 +12,7 @@ class Game extends Model
     protected $fillable = [
         'winner_id',
         'loser_id',
+        'channel',
     ];
 
     const UPDATED_AT = null;
