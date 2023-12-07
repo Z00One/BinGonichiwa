@@ -16,18 +16,13 @@ Route::middleware([
 ])->group(function () {
     Route::get('/waiting', [GameController::class, 'index']);
     Route::patch('waiting/leave', [GameController::class, 'leave']);
-    Route::get('/games/{channel}', [GameController::class, 'create'])->middleware(['game.check']);
-    Route::post('/games/bingos/{channel}', [GameController::class, 'bingoValueSubmit'])->middleware(['game.bingo.submit']);
+    Route::get('/games/{channel}', [GameController::class, 'create'])->middleware('game.check');
+    Route::post('/games/{channel}', [GameController::class, 'store'])->middleware('game.gameOver');
+    Route::post('/games/bingos/{channel}', [GameController::class, 'bingoValueSubmit'])->middleware('game.bingo.submit');
 });
 
 
-Route::get('/set-language/{lang}', function ($lang) {
-    if (! in_array($lang, ['en', 'ja'])) {
-        abort(400);
-    }
-    
-    Session::put('locale', $lang);
-    
+Route::get('/set-language/{lang}', function () {
     return redirect()->back();
 });
 
