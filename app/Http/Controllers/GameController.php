@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Redis;
 use App\Events\WaitingEvent;
 use Illuminate\Support\Facades\Auth;
 use App\Services\BingoService;
+use App\Events\BingoValueSubmitEvent;
+use App\Events\BingoSubmitEvent;
 
 class GameController extends Controller
 {
@@ -30,12 +32,15 @@ class GameController extends Controller
                 $channel = $channels[$i];
                 $room = Redis::hgetall($channel);
                 
-                if ($room == null) {
+                if ($room === null) {
                     Redis::hmset($channel, [$userId]);
+                    // TODO: smembers 로 배열로 관리하는게 좋을듯 Redis::smembers($channel, [$userId]); - set 타입 이라 중복을 걱정하지 않아도 된다.
                     $findRoom = true;
                 }
                 
-                elseif (count($room) < config('broadcasting.game.players')) {
+                $room = array_unique($room);
+
+                if (count($room) < config('broadcasting.game.players')) {
                     array_push($room, $userId);
                     Redis::hmset($channel, $room);
                     $findRoom = true;
@@ -51,7 +56,7 @@ class GameController extends Controller
             }
 
             if (!$findRoom) {
-                $channel = config('broadcasting.game.game') . bin2hex(random_bytes(5));
+                $channel = config('broadcasting.game.waiting') . now()->timestamp . bin2hex(random_bytes(5));
                 Redis::sadd(config('broadcasting.game.channels'), $channel);
                 Redis::hmset($channel, [$userId]);
             }
@@ -61,7 +66,7 @@ class GameController extends Controller
                 ]));
         } 
         else {
-            $channel = config('broadcasting.game.game') . bin2hex(random_bytes(5));
+            $channel = config('broadcasting.game.waiting') . now()->timestamp . bin2hex(random_bytes(5));
             Redis::sadd(config('broadcasting.game.channels'), $channel);
             Redis::hmset($channel, [$userId]);
         }
@@ -79,12 +84,12 @@ class GameController extends Controller
     public function leave()
     {
         $userId = Auth::user()->id;
-        $channelName = request()->input(config('broadcasting.game.channel'));
-        $channel = Redis::hgetall($channelName);
+        $channel = request()->input(config('broadcasting.game.channel'));
+        $room = Redis::hgetall($channel);
         
-        foreach ($channel as $user => $id) {
+        foreach ($room as $user => $id) {
             if ($id === (string)$userId) {
-                Redis::hdel($channelName, $user);
+                Redis::hdel($channel, $user);
                 break;
             }
         }
@@ -93,88 +98,128 @@ class GameController extends Controller
     }
     
     /**
-     * Show the form for creating the resource.
+     * Creates a new game session.
+     *
+     * @param Request $request The HTTP request object.
+     * @param BingoService $bingoService The BingoService instance.
+     * @return View The game view with the necessary data.
      */
-    public function create(BingoService $bingoService, String $channel)
+    public function create(Request $request, BingoService $bingoService)
     {
-        $userId = Auth::user()->id;
+        $userId = $request->userId;
+        $channel = $request->channel;
+        $waitingList = $request->waitingList;
 
-        $gameChannal = Redis::hgetall($channel);
-
-        if (count($gameChannal) < config('broadcasting.game.players')) {
-            return view('errors.404');
-        }
-
-        // TODO: 본 게임방에 없는 유저가 접근할 시 403 에러를 던져줄 필요가 있음
-        $opponentId = $gameChannal[0] == (string) $userId ? (int) $gameChannal[1] : (int) $gameChannal[0];
+        $opponentId = $waitingList[0] == (string) $userId ? (int) $waitingList[1] : (int) $waitingList[0];
         $opponent = User::find($opponentId)->name;
         
-        $turn = $gameChannal[0] == (string) $userId ? true : false;
+        $turn = $waitingList[0] == (string) $userId ? true : false;
         $bingoId = $turn ? 0 : 1;
         $opponentBingoId = $turn ? 1 : 0;
         
-        $bingosName = str_replace(config('broadcasting.game.game'), config('broadcasting.game.bingos'), $channel);
+        $bingosId = str_replace(config('broadcasting.game.waiting'), config('broadcasting.game.game'), $channel);
+        $bingoChannel = str_replace(config('broadcasting.game.waiting'), config('broadcasting.game.bingo', 'bingo.'), $channel);
         
-        $bingos = Redis::get($bingosName);
+        $bingos = Redis::get($bingosId);
 
         if($bingos === null) {
             $bingos = $bingoService->createBingoBoards();
-            Redis::set($bingosName, json_encode($bingos));
+            Redis::set($bingosId, json_encode($bingos));
+        }
+        else {
+            $bingos = json_decode($bingos, true);
         }
         
-        return view('game', compact('opponent', 'turn', 'bingos', 'bingoId', 'opponentBingoId', 'bingosName'));
+        $channel = $bingosId;
+
+        return view('game', compact('opponent', 'turn', 'bingos', 'bingoId', 'opponentBingoId', 'channel', 'userId', 'bingoChannel'));
     }
 
     /**
-     * Store the newly created resource in storage.
-     */
-    public function store(Request $request): never
-    {
-        abort(404);
-    }
-
-    /**
-     * Retrieves the records of a user based on their name.
+     * Submit the bingo value.
      *
-     * @param string $name The name of the user.
-     * @return \Illuminate\View\View The view displaying the user's records.
+     * @param Request $request The request object containing the channel and value.
+     * @return \Illuminate\Http\JsonResponse The response containing the success message.
      */
-    public function record(String $name)
+    public function bingoValueSubmit(Request $request)
     {
-        $user = User::where('name', $name)->first();
-        
-        if (!$user) {
-            return view('errors.404');
-        }
+        $channel = $request->channel;
+        $value = (int) $request->value;
 
+        broadcast(new BingoValueSubmitEvent([
+            config('broadcasting.game.channel') => $channel,
+            config('broadcasting.game.submitValue') => $value,
+        ]));
+
+        return response()->json(['message' => 'Submitted successfully'], 201);
+    }
+
+    /**
+     * Store the submitted game data.
+     *
+     * @param \Illuminate\Http\Request $request The HTTP request object.
+     * @return \Illuminate\Http\JsonResponse Returns a JSON response with a success message.
+     */
+    public function store(Request $request)
+    {
+        $userId = Auth::user()->id;
+        $players = $request->input('players');
+        $opponentId = $players[0] == (string) $userId ? (int) $players[1] : (int) $players[0];
+        $gameChannel = $request->input('gameChannel');
+        $bingoChannel = str_replace(config('broadcasting.game.game'), config('broadcasting.game.bingo', 'bingo.'), $gameChannel);
+        
+        Game::create([
+            'winner_id' => $userId,
+            'loser_id' => $opponentId,
+            'channel' => $gameChannel,
+        ]);
+
+        $bingosId = $request->input('bingosId');
+        $channel = str_replace(config('broadcasting.game.game'), config('broadcasting.game.waiting'), $gameChannel);
+
+        Redis::srem(config('broadcasting.game.channels'), $channel);
+        Redis::del($channel);
+        Redis::del($bingosId);
+        
+        broadcast(new BingoSubmitEvent([
+            config('broadcasting.game.channel') => $bingoChannel,
+            config('broadcasting.game.winnerId') => $userId,
+        ]));
+
+        return response()->json(['message' => 'Submitted successfully'], 201);
+    }
+
+    /**
+     * Retrieves the record of a user.
+     *
+     * @param Request $request The HTTP request object.
+     * @return View The view containing the user's record.
+     */
+    public function record(Request $request)
+    {
+        $user = $request->user;
         $userId = $user->id;
         
-        $latestGames = Game::has('winner', $userId)->orHas('loser', $userId)->orderByDesc('created_at')->paginate(5);
-
-        foreach ($latestGames as $game) {
-            $isWin = $game->winner_id == $userId;
-            $game->isWin = $isWin;
-            $opponent = $isWin ? $game->loser()->first()?->name : $game->winner()->first()?->name;
-            $game->opponent = $opponent;
-        }
-
         $winCount = $user->wins()->count();
-
-        $allGamesCount = Game::has('winner', $userId)->orHas('loser', $userId)->count();
-
-        $winningRate = ($allGamesCount) 
-            ? ($winCount / $allGamesCount) * 100
-            : 0;
+        $loseCount = $user->loses()->count();
+        $allGames = Game::where('winner_id', $userId)->orWhere('loser_id', $userId);
+        
+        $winningRate = $allGames->get() 
+        ? $winCount / ($allGames->count()) * 100
+        : 0;
         
         $winningRate = number_format($winningRate, 2);
         
-        return view('records', [
-           'records' => $latestGames,
-           'name' => $name,
-           'user' => [
-               'winCount' => $winCount,
-               'winningRate' => $winningRate,
-           ],
-        ]);
+        $records= $allGames->orderBy('created_at', 'desc')->paginate(5);
+        
+        foreach ($records as $game) {
+            $game->isWin = ($game->winner_id === $userId);
+            $opponent = ($game->isWin) 
+                ? ($game->loser()->first()?->name)
+                : ($game->winner()->first()?->name);
+            $game->opponent = $opponent;
+        }
+
+        return view('records', compact('user', 'records', 'winCount', 'loseCount', 'winningRate'));
     }
 }
