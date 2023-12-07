@@ -18,8 +18,12 @@ class CheckUserExists
     {
         $name = $request->route('name');
         $user = User::where('name', $name)->first();
-
+        
         $isUser = $user ? true : false;
+
+        if(!$isUser) {
+            abort(404);
+        }
 
         $request->merge(['user' => $user, 'isUser' => $isUser]);
 

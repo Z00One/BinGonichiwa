@@ -22,11 +22,11 @@ class CheckGameChannelAccess
         $waitingList = Redis::hgetall($channelName);
 
         if (!$waitingList) {
-            return view('errors.404');
+            abort(404);
         }
 
         if (count($waitingList) < config('broadcasting.game.players')) {
-            return view('errors.404');
+            abort(403);
         }
 
         foreach ($waitingList as $user) {
@@ -36,6 +36,6 @@ class CheckGameChannelAccess
             }
         }
 
-        return view('errors.403');
+        abort(403);
     }
 }
