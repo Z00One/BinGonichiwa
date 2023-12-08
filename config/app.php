@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Seoul',
 
     /*
     |--------------------------------------------------------------------------
@@ -83,7 +83,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'ja',
 
     /*
     |--------------------------------------------------------------------------
@@ -187,4 +187,8 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+    'supported_languages' => [
+        'en' => 'en',
+        'ja' => 'ja',
+    ],
 ];
