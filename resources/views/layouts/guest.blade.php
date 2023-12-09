@@ -6,8 +6,11 @@
 <body>
     @include('components.header')
 
-    <div class="font-sans text-gray-900 antialiased">
-        {{ $slot }}
+    <div class="max-w-screen-lg mx-auto flex flex-col sm:justify-center items-center pt-6 sm:pt-0"
+        style="min-height: 90vh">
+        <div class="w-full sm:w-screen-lg py-2 overflow-hidden">
+            {{ $slot }}
+        </div>
     </div>
 
 </body>
