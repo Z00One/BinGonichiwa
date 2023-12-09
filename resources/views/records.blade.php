@@ -38,27 +38,27 @@
     <div class="overflow-x-auto mx-4 sm:mx-10 mt-16">
 
         <div class="flex justify-evenly text-xs sm:text-sm">
-            <div class="relative min-w-[120px] min-h-[120px] sm:min-w-[180px] sm:min-h-[180px] rounded-full border border-myFontColor overflow-hidden bg-myGreen"
+            <div class="relative min-w-[100px] min-h-[100px] sm:min-w-[150px] sm:min-h-[150px] lg:min-w-[180px] lg:min-h-[180px] rounded-full border border-myFontColor overflow-hidden bg-myGreen"
                 id="winning_rate" style="clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%)"
-                data-winning-rate="{{ $user['winningRate'] }}">
+                data-winning-rate="{{ $winningRate }}">
                 <div class="wave_before"></div>
                 <div class="wave_after"></div>
                 <div class="absolute top-0 left-0 w-full h-full flex justify-center items-center text-center sm:text-lg">
                     {{ __('messages.records.winning_rate') }}
-                    <br /> {{ $user['winningRate'] == 0 ? 'N/A' : $user['winningRate'] . '%' }}
+                    <br /> {{ !$winningRate ? 'N/A' : $winningRate . '%' }}
                 </div>
             </div>
 
             <div class="flex items-center max-w-[400px]">
                 <div>
                     <div class="my-1 text-sm sm:text-2xl font-medium text-gray-900">
-                        {{ $name }} {{ __('messages.records.name') }}
+                        {{ $user->name }} {{ __('messages.records.name') }}
                     </div>
 
                     <div class="mt-4 text-gray-600 sm:text-lg">
-                        {{ $user['winCount'] + $user['loseCount'] }} {{ __('messages.records.games') }}
-                        {{ $user['winCount'] }} {{ __('messages.records.win') }}
-                        {{ $user['loseCount'] }} {{ __('messages.records.lose') }}
+                        {{ $winCount + $loseCount }} {{ __('messages.records.games') }}
+                        {{ $winCount }} {{ __('messages.records.win') }}
+                        {{ $loseCount }} {{ __('messages.records.lose') }}
                     </div>
                 </div>
             </div>
@@ -134,7 +134,9 @@
                 const waveBefore = document.querySelector('.wave_before');
                 const waveAfter = document.querySelector('.wave_after');
                 const winningRate = document.querySelector('#winning_rate').getAttribute('data-winning-rate');
-                const TOP = -103;
+                console.log('{{ $winningRate }}');
+                console.log('{{ $winCount }}');
+                const TOP = -100;
 
                 if (waveBefore) {
                     const topValue = TOP - winningRate;
