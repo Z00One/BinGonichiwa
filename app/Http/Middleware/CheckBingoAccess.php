@@ -7,9 +7,17 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Auth;
+use App\Services\RoomService;
 
 class CheckBingoAccess
 {
+    private $roomService;
+
+    public function __construct(RoomService $roomService)
+    {
+        $this->roomService = $roomService;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -18,28 +26,16 @@ class CheckBingoAccess
     public function handle(Request $request, Closure $next): Response
     {
         $userId = Auth::user()->id;
-        $channelName = $request->route('bingosName');
-        
-        $bingosName = str_replace(config('broadcasting.game.game'),config('broadcasting.game.bingos'), $channelName);
-        $channel = Redis::hgetall($channelName);
-        
-        $isBingosPlayer = false;
-        
-        foreach ($channel as $id) {
-            if ($id === (string) $userId) {
-                $isBingosPlayer = true;
-                break;
-            }
-        }
-        
-        if (!$isBingosPlayer) {
+        $channel = $request->route(config('broadcasting.game.channel'));
+        $waitingChannel = str_replace(config('broadcasting.game.game'), config('broadcasting.game.waiting'), $channel);
+
+        if (!$this->roomService->isRoomMember($userId, $waitingChannel)) {
             abort(403);
         }
         
-        $bingos = Redis::get($bingosName);
+        $bingos = Redis::get($channel);
         
         if (!$bingos) {
-            return view('errors.404');
             abort(404);
         }
         
@@ -49,7 +45,7 @@ class CheckBingoAccess
             abort(404);
         }
 
-        $request->merge(['bingos' => $bingos, config('broadcasting.game.channel') => $channelName]);
+        $request->merge([config('broadcasting.game.channel') => $channel]);
 
         return $next($request);
     }
