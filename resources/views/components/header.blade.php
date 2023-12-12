@@ -1,4 +1,4 @@
-<div class="absolute top-0 left-0 w-full">
+<header class="absolute top-0 left-0 w-full">
     <div class="flex justify-between max-w-screen-lg mx-auto">
         <div class="p-2 flex items-center">
             <a href="{{ url('/') }}">
@@ -43,7 +43,7 @@
                             <div class="border-t border-gray-200"></div>
                             @endif
                             
-                            <form method="POST" action="http://127.0.0.1:8000/logout" id="logout-form">
+                            <form method="POST" action="http://127.0.0.1:8000/logout" id="logout-form" class="m-0">
                                 @csrf
                                 <a class="block w-full px-1 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                 href="#" @click.prevent="$root.submit();"
@@ -64,32 +64,8 @@
         </div>
     </div>
     <hr />
-</div>
-
-<script>
-    window.logoutMessage = @json(__('messages.auth.logout'));
-
-    const logout = (msg) => {
-        const confirmed = window.confirm(msg);
-
-        if (confirmed) {
-            document.querySelector('#logout-form').submit();
-        }
-    }
-
-    const toggleContent = () => {
-        const dynamicContent = document.querySelector('#dynamicContent');
-        const openIcon = document.querySelector('#openIcon');
-        const closeIcon = document.querySelector('#closeIcon');
-
-        if (dynamicContent.style.display === 'none') {
-            dynamicContent.style.display = 'block';
-            openIcon.style.display = 'none';
-            closeIcon.style.display = 'inline-block';
-        } else {
-            dynamicContent.style.display = 'none';
-            openIcon.style.display = 'inline-block';
-            closeIcon.style.display = 'none';
-        }
-    }
-</script>
+    <script type="text/javascript" src="{{ asset('js/header.js') }}"></script>
+    <script>
+        window.logoutMessage = @json(__('messages.auth.logout'));
+    </script>
+</header>
