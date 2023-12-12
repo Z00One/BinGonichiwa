@@ -143,9 +143,9 @@ class GameController extends Controller
         $loseCount = $user->loses()->count();
         $allGames = Game::where('winner_id', $userId)->orWhere('loser_id', $userId);
         
-        $winningRate = $allGames->get() 
-        ? $winCount / ($allGames->count()) * 100
-        : 0;
+        $winningRate = $allGames->count()
+            ? $winCount / ($allGames->count()) * 100
+            : 0;
         
         $winningRate = number_format($winningRate, 2);
         
