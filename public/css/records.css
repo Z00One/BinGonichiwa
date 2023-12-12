@@ -1,0 +1,34 @@
+.wave_before {
+    content: "";
+    width: 200%;
+    height: 200%;
+    background-color: #ffffff;
+    position: absolute;
+    top: -100%;
+    left: -50%;
+    border-radius: 40%;
+    animation: anim 12s linear infinite;
+}
+
+.wave_after {
+    content: "";
+    width: 204%;
+    height: 204%;
+    background-color: #ececec70;
+    position: absolute;
+    top: -100%;
+    left: -52%;
+    border-radius: 40%;
+    animation: anim 12s linear infinite;
+    animation-delay: 0.5s;
+}
+
+@keyframes anim {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
