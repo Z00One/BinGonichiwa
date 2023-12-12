@@ -6,6 +6,11 @@ class BingoService
 {
 	private $size;
 
+    /**
+     * Retrieves the size of the bingo board.
+     *
+     * @return void
+     */
     public function getBingoBoardSize()
     {
         $size = config('broadcast.game.boardSize', 5);
@@ -13,6 +18,12 @@ class BingoService
 		$this->size = $size;
     }
 
+    /**
+     * Generate the function comment for the createBingoBoards function.
+     *
+     * This function creates two bingo boards by shuffling an array and converting it to bingo format.
+     * @return array An array containing two bingo boards
+     */
     public function createBingoBoards()
     {
 		$this->getBingoBoardSize();
@@ -31,6 +42,11 @@ class BingoService
         ];
     }
 
+    /**
+     * Shuffles an array of numbers and returns the shuffled array.
+     *
+     * @return array The shuffled array of numbers.
+     */
     private function shuffleArray()
     {
 		$SIZE = $this->size;
@@ -41,6 +57,13 @@ class BingoService
 		return $numbers;
     }
 
+    /**
+     * Check if two arrays are different.
+     *
+     * @param array $arr1 The first array to compare.
+     * @param array $arr2 The second array to compare.
+     * @return bool Returns true if the arrays are different, false otherwise.
+     */
     private function areArraysDifferent($arr1, $arr2)
     {
 		$SIZE = $this->size;
@@ -54,6 +77,12 @@ class BingoService
 		return false;
     }
 
+    /**
+     * Converts a given array into a bingo board.
+     *
+     * @param array $array The input array to be converted.
+     * @return array The converted two dimensional array.
+     */
     private function convertToBingo($array)
     {
 		$SIZE = $this->size;
