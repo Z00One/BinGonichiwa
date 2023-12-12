@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Game;
 use App\Models\User;
-use Illuminate\Support\Facades\Redis;
 use App\Events\WaitingEvent;
 use Illuminate\Support\Facades\Auth;
 use App\Services\BingoService;
+use App\Services\RoomService;
 use App\Events\BingoValueSubmitEvent;
 use App\Events\BingoSubmitEvent;
 
@@ -16,83 +16,34 @@ class GameController extends Controller
 {
     /**
      * Retrieves the channel list and assigns a user to a room.
-     *
+     * 
+     * @param RoomService $roomService The room service for managing rooms.
      * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(RoomService $roomService)
     {
-        $channels = Redis::smembers(config('broadcasting.game.channels'));
-        $userId = Auth::user()->id;
-        $channel = '';
+        $channel = $roomService->findWaitingRoom();
 
-        if (count($channels)) {
-            $findRoom = false;
-            
-            for ($i = 0; $i < count($channels) && !$findRoom; $i++) {
-                $channel = $channels[$i];
-                $room = Redis::hgetall($channel);
-                
-                if ($room === null) {
-                    Redis::hmset($channel, [$userId]);
-                    // TODO: smembers 로 배열로 관리하는게 좋을듯 Redis::smembers($channel, [$userId]); - set 타입 이라 중복을 걱정하지 않아도 된다.
-                    $findRoom = true;
-                }
-                
-                $room = array_unique($room);
-
-                if (count($room) < config('broadcasting.game.players')) {
-                    array_push($room, $userId);
-                    Redis::hmset($channel, $room);
-                    $findRoom = true;
-                }
-
-                else {
-                    foreach ($room as $id) {
-                        if ($id === (string)$userId) {
-                            $findRoom = true;
-                        }
-                    }
-                }
-            }
-
-            if (!$findRoom) {
-                $channel = config('broadcasting.game.waiting') . now()->timestamp . bin2hex(random_bytes(5));
-                Redis::sadd(config('broadcasting.game.channels'), $channel);
-                Redis::hmset($channel, [$userId]);
-            }
-
-            broadcast(new WaitingEvent([
-                config('broadcasting.game.channel') => $channel,
-                ]));
-        } 
-        else {
-            $channel = config('broadcasting.game.waiting') . now()->timestamp . bin2hex(random_bytes(5));
-            Redis::sadd(config('broadcasting.game.channels'), $channel);
-            Redis::hmset($channel, [$userId]);
-        }
+        broadcast(new WaitingEvent([
+            config('broadcasting.game.channel') => $channel,
+        ]));
 
         return view('waiting', [
             config('broadcasting.game.channel') => $channel,
-            ]);
+        ]);
     }
 
     /**
      * Leave the channel.
      *
+     * @param RoomService $roomService The room service for managing rooms.
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function leave()
+    public function leave(Request $request, RoomService $roomService)
     {
-        $userId = Auth::user()->id;
-        $channel = request()->input(config('broadcasting.game.channel'));
-        $room = Redis::hgetall($channel);
-        
-        foreach ($room as $user => $id) {
-            if ($id === (string)$userId) {
-                Redis::hdel($channel, $user);
-                break;
-            }
-        }
+        $channel = $request->channel;
+
+        $roomService->leaveWaitingRoom($channel);
         
         return redirect('/');
     }
@@ -101,10 +52,11 @@ class GameController extends Controller
      * Creates a new game session.
      *
      * @param Request $request The HTTP request object.
+     * @param RoomService $roomService The room service for managing rooms.
      * @param BingoService $bingoService The BingoService instance.
      * @return View The game view with the necessary data.
      */
-    public function create(Request $request, BingoService $bingoService)
+    public function create(Request $request, RoomService $roomService, BingoService $bingoService)
     {
         $userId = $request->userId;
         $channel = $request->channel;
@@ -117,22 +69,12 @@ class GameController extends Controller
         $bingoId = $turn ? 0 : 1;
         $opponentBingoId = $turn ? 1 : 0;
         
-        $bingosId = str_replace(config('broadcasting.game.waiting'), config('broadcasting.game.game'), $channel);
-        $bingoChannel = str_replace(config('broadcasting.game.waiting'), config('broadcasting.game.bingo', 'bingo.'), $channel);
-        
-        $bingos = Redis::get($bingosId);
+        $gameRoom = $roomService->createGameRoom($channel, $bingoService);
+        $bingos = $gameRoom['bingos'];
+        $gameChannel = $gameRoom['gameChannel'];
+        $bingoChannel = $gameRoom['bingoChannel'];
 
-        if($bingos === null) {
-            $bingos = $bingoService->createBingoBoards();
-            Redis::set($bingosId, json_encode($bingos));
-        }
-        else {
-            $bingos = json_decode($bingos, true);
-        }
-        
-        $channel = $bingosId;
-
-        return view('game', compact('opponent', 'turn', 'bingos', 'bingoId', 'opponentBingoId', 'channel', 'userId', 'bingoChannel'));
+        return view('game', compact('opponent', 'turn', 'bingos', 'bingoId', 'opponentBingoId', 'gameChannel', 'userId', 'bingoChannel'));
     }
 
     /**
@@ -155,18 +97,19 @@ class GameController extends Controller
     }
 
     /**
-     * Store the submitted game data.
+     * Store the game result and submits a bingo event.
      *
-     * @param \Illuminate\Http\Request $request The HTTP request object.
-     * @return \Illuminate\Http\JsonResponse Returns a JSON response with a success message.
+     * @param Request $request The request object containing the game data.
+     * @param RoomService $roomService The room service for managing rooms.
+     * @return JsonResponse A JSON response indicating the success of the submission.
      */
-    public function store(Request $request)
+    public function store(Request $request, RoomService $roomService)
     {
         $userId = Auth::user()->id;
-        $players = $request->input('players');
+        $players = $request->players;
         $opponentId = $players[0] == (string) $userId ? (int) $players[1] : (int) $players[0];
-        $gameChannel = $request->input('gameChannel');
-        $bingoChannel = str_replace(config('broadcasting.game.game'), config('broadcasting.game.bingo', 'bingo.'), $gameChannel);
+        $gameChannel = $request->gameChannel;
+        $bingoChannel = str_replace(config('broadcasting.game.game'), config('broadcasting.game.bingo'), $gameChannel);
         
         Game::create([
             'winner_id' => $userId,
@@ -174,12 +117,8 @@ class GameController extends Controller
             'channel' => $gameChannel,
         ]);
 
-        $bingosId = $request->input('bingosId');
         $channel = str_replace(config('broadcasting.game.game'), config('broadcasting.game.waiting'), $gameChannel);
-
-        Redis::srem(config('broadcasting.game.channels'), $channel);
-        Redis::del($channel);
-        Redis::del($bingosId);
+        $roomService->leaveGameRoom($channel);
         
         broadcast(new BingoSubmitEvent([
             config('broadcasting.game.channel') => $bingoChannel,
