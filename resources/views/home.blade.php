@@ -5,7 +5,7 @@
                 $user = Auth::user();
                 $winCount = $user->wins()->count();
                 $loseCount = $user->loses()->count();
-                $winningRate = $winCount + $loseCount ? ($winCount / ($winCount + $loseCount)) * 100 . '%' : 'N/A';
+                $winningRate = $winCount + $loseCount ? number_format(($winCount / ($winCount + $loseCount)) * 100, 2) . '%' : 'N/A';
             @endphp
             <p class="mt-7">
                 {{ __('messages.home.winning_rate', ['name' => $user->name]) }}
@@ -42,3 +42,10 @@
         @endauth
     </div>
 </x-app-layout>
+
+<footer class="text-center py-4 bg-myFontColor text-white text-xs fixed bottom-0 w-full">
+    <p>© 2023 by Juwon Kang. All rights reserved.</p>
+    <p class="mt-3">
+        <a href="https://github.com/Z00one" target="_blank" class="text-myGreen hover:text-green-500">Github</a>
+    </p>
+</footer>
