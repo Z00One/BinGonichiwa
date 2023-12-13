@@ -71,12 +71,17 @@ return [
     ],
 
     'game' => [
+        'waiting' => env('GAME_WAITING', 'waiting.'),
         'game' => env('GAME_GAME', 'game.'),
         'players' => (int) env('GAME_HEAD_COUNT', 2),
         'channels' => env('GAME_CHANNELS', 'channels'),
         'channel' => env('GAME_CHANNEL', 'channel'),
         'bingos' => env('GAME_BINGOS', 'bingos'),
         'boardSize' => (int) env('GAME_BOARD_SIZE', 5),
+        'submitValue' => env('GAME_SUBMIT_VALUE', 'submitValue'),
+        'GameOver' => env('GAME_OVER', 'Game is over'),
+        'winnerId' => env('GAME_WINNER_ID', 'winnerId'),
+        'bingoChannel' => env('GAME_BINGO_CHANNEL', 'bingo.'),
     ]
 
 ];
