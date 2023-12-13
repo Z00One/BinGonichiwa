@@ -32,3 +32,9 @@ window.Waiting = new Waiting();
 
 import Game from "./game";
 window.Game = new Game();
+
+import Timer from "./timer";
+window.Timer = new Timer();
+
+import Bingo from "./bingo";
+window.Bingo = new Bingo();
