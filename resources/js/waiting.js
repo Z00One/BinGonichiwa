@@ -10,26 +10,27 @@ export default class Waiting {
         this.opponentLeave = false;
     }
 
-    start() {
-        window.location.pathname = `/games/${this.channel}`;
-    }
+    start = () => {
+        setTimeout(() => {
+            window.location.pathname = `/games/${this.channel}`;
+        }, 0);
+    };
 
-    leave(isUnload = false) {
+    leave = (isUnload = false) => {
         const flag = window.confirm(this.leaveConfirmMessage);
 
         if (flag || isUnload) {
             window.Echo.leave(this.channel);
             this.leaveForm.submit();
         }
-    }
+    };
 
     handleUnload = (event) => {
         event.preventDefault();
-        window.Echo.leave(this.channel);
         this.leave(true);
     };
 
-    init(data) {
+    init = (data) => {
         this.channel = data.channel;
         this.leaveForm = data.leaveForm;
         this.leaveConfirmMessage = data.leaveConfirmMessage;
@@ -38,18 +39,12 @@ export default class Waiting {
         this.errorMessage = data.errorMessage;
         this.playerCount = data.playerCount;
 
-        console.log(`--${this.channel}--`);
-
         if (!this.channel) {
             window.alert(this.errorMessage);
             window.location.href = "/";
         }
 
         window.Echo.join(this.channel)
-            .leaving((user) => {
-                this.opponentLeave = true;
-                window.alert(this.opponentleaveMessage);
-            })
             .here((users) => {
                 if (users.length === this.playerCount) {
                     window.alert(`${this.gameStartMessage}`);
@@ -67,7 +62,5 @@ export default class Waiting {
             });
 
         window.addEventListener("beforeunload", this.handleUnload);
-
-        window.addEventListener("unload", this.handleUnload);
-    }
+    };
 }
