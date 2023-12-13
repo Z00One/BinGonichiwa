@@ -10,11 +10,11 @@
         style="min-height: 90vh">
         <div class="w-full sm:w-screen-lg py-2 overflow-hidden text-center text-myRed">
             <p class="text-7xl sm:text-9xl">404</p>
-            <p class="text-sm sm:text-xl">{{ __('messages.errors.404') }}</p>
+            <p class="text-sm sm:text-xl mt-5">{{ __('messages.errors.404') }}</p>
         </div>
-        <a href="javascript:history.back()" class="mt-10 sm:mt-15">
+        <a href="/" class="mt-10 sm:mt-15">
             <x-danger-button>
-                {{ __('messages.back') }}
+                {{ __('messages.errors.button') }}
             </x-danger-button>
         </a>
     </div>
