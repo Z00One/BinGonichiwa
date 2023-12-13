@@ -1,4 +1,4 @@
-(日本語)["./README.md"]
+[日本語](https://github.com/Z00One/BinGonichiwa/tree/main#readme)
 
 <p align="center"><img src="public/assets/favicon.svg" width="150" alt="BinGonichiwa Logo"></p>
 
