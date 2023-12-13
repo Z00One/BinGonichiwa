@@ -1,66 +1,51 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+(English)["./README.EN.md"]
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+<p align="center"><img src="public/assets/favicon.svg" width="150" alt="BinGonichiwa Logo"></p>
 
-## About Laravel
+## BinGonichiwa について
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+BinGonichiwa は Laravel を利用したリアルタイム 1 対 1 ビンゴゲームです。このゲームは Laravel の Broadcasting 機能とランダムマッチング機能を利用して、2 人のユーザーがリアルタイムで対戦できるようになっています。
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 主な機能
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-   リアルタイム 1 対 1 ビンゴマッチ
+-   ランダムユーザーマッチング
 
-## Learning Laravel
+## 技術スタック
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+-   Laravel
+-   Laravel Echo
+-   Tailwind CSS
+-   MySQL
+-   Redis
+-   Pusher
+-   Jetstream
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## インストール
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. リポジトリをローカルマシンにクローンします: `https://github.com/Z00One/BinGonichiwa.git`
+2. ディレクトリに移動します: `cd BinGonichiwa`
+3. Composer と Npm を使用して依存関係をインストールします: `composer install`, `npm install`
+4. Pusher を設定します: この[サイト](https://pusher.com/)ご参考ください
+5. `.env.example` ファイルをコピーして。`.env` ファイルを作ります: `cp .env.example .env`
+6. システムに必要な値を設定します:
+    - `GAME_*`
+    - `PUSHER_*={pusherの設定の値}`
+    - `REDIS_*,`
+7. `mysql` や `redis` がない場合はダウンロードや docker のイメージを利用して必要な環境を構築します
+8. データベースをマイグレートします: `php artisan migrate`
+9. tailwind を適用します:
+    - `npm run dev`
+    - `npm run build`
+10. サーバーを起動します: `php artisan serve`
 
-## Laravel Sponsors
+## 使用方法
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+1. ウェブブラウザを開いて `http://localhost:8000` に移動します。
+2. ログインボタンをクリックして既存のアカウントでログインします。アカウントがない場合は登録します
+3. メインページで 'マッチング開始' ボタンをクリックします。あなたはランダムにマッチングされたユーザーと 1 対 1 のビンゴゲームをプレイします。
 
-### Premium Partners
+## ETC
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+-   コンソールに `php artisan serve:local` コマンドを入力して、プライベート IP で serve することができます。
+-   Bingonichiwa は日本語と英語に対応しています。
