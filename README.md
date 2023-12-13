@@ -1,4 +1,4 @@
-(English)["./README.EN.md"]
+[English](https://github.com/Z00One/BinGonichiwa/blob/main/README.EN.md)
 
 <p align="center"><img src="public/assets/favicon.svg" width="150" alt="BinGonichiwa Logo"></p>
 
