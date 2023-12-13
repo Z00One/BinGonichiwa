@@ -25,7 +25,7 @@
                             style="position: absolute; left: -98px; top: 3px; min-width: 100px;">
 
                             <a class="block w-full py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                href="http://127.0.0.1:8000/user/profile">{{ __('messages.header.profile') }}</a>
+                                href="{{ url('/user/profile')}}">{{ __('messages.header.profile') }}</a>
                                 
                             <div class="border-t border-gray-200"></div>
                                 
@@ -43,7 +43,7 @@
                             <div class="border-t border-gray-200"></div>
                             @endif
                             
-                            <form method="POST" action="http://127.0.0.1:8000/logout" id="logout-form" class="m-0">
+                            <form method="POST" action="{{ url('/logout')}}" id="logout-form" class="m-0">
                                 @csrf
                                 <a class="block w-full px-1 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
                                 href="#" @click.prevent="$root.submit();"
