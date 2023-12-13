@@ -94,10 +94,27 @@ return [
         'cancel_confirm' => 'Are you sure you want to cancel?',
         'start' => 'The other person has been found. Start the game.',
         'error' => 'An error occurred. Please try again later.',
+        'opponent_leave' => 'The opponent has left the game.',
+        'caution_first' => 'If you leave the game after the matching,',
+        'caution_second' => 'you will be recorded as a loss.'
     ],
-    'match' => [
+    'game' => [
         'users' => 'your board',
         'opponents' => '\'s board',
         'submit' => 'Submit',
+        'usersTurn' => 'Your turn',
+        'opponentsTurn' => 'Waiting for your opponent',
+        'notAvailableValuesMessage' => 'This value is not available.',
+        'notUsersTurnMessage' => 'Not your turn yet.',
+        'errorMessage' => 'An error occurred. Please try again later.',
+        'opponentHasLeftMessage' => 'The opponent has left the game. You win and are recorded.',
+        'opponentNotParticipatedMessage' => 'The opponent did not participate in the game. You win and are recorded.',
+        'seconds' => 's',
+        'timeLeft' => 'Time left',
+        'value' => 'bingo number',
+        'bingo' => 'Bingo!',
+        'winMessage' => 'You win! Congratulations! 🎉',
+        'loseMessage' => 'You lose... 😭',
+        'guide' => 'Number of bingos you need to complete'
     ],
 ];

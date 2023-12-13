@@ -94,10 +94,27 @@ return [
         'cancel_confirm' => 'キャンセルしてもよろしいです？',
         'start' => '相手を見つけました。ゲームを始めます。',
         'error' => 'エラーが発生しました。後でもう一度試してください。',
+        'opponent_leave' => '相手を脱退しました。',
+        'caution_first' => 'マッチング後にゲームから退出した場合、',
+        'caution_second' => 'ゲームはあなたの敗として記録されます。'
     ],
-    'match' => [
+    'game' => [
         'users' => 'あなたのボード',
-        'opponents' => '\'様のボード',
+        'opponents' => '様のボード',
         'submit' => '入力',
+        'usersTurn' => 'あなたのターン',
+        'opponentsTurn' => '相手のターン',
+        'notAvailableValuesMessage' => 'この値は利用できません。',
+        'notUsersTurnMessage' => 'あなたのターンではありません。',
+        'errorMessage' => 'エラーが発生しました。後でもう一度試してください。',
+        'opponentHasLeftMessage' => '相手が退出しました。あなたの勝ちとして記録されます。',
+        'opponentNotParticipatedMessage' => '相手がゲームに参加しませんでした。あなたの勝ちとして記録されます。',
+        'seconds' => '秒',
+        'timeLeft' => '残り時間',
+        'value' => 'ビンゴの値を入力',
+        'bingo' => 'ビンゴ!',
+        'winMessage' => 'あなたの勝ち! おめでとう🎉',
+        'loseMessage' => 'あなたの負け...😭',
+        'guide' => '完成すべきビンゴの数'
     ],
 ];
