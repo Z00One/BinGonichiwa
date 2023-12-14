@@ -47,5 +47,5 @@ BinGonichiwa is a real-time 1-on-1 Bingo game built with Laravel. This game util
 
 ## ETC
 
--   If you want to serve on your private IP, ust enter the `php artisan serve:local` command in the console.
+-   If you are in a window environment, you can type the command `php artisan serve:local` in the console to serve on a private IP.
 -   Bingonichiwa supports English and Japanese.
