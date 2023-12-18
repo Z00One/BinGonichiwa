@@ -31,7 +31,6 @@ BinGonichiwa is a real-time 1-on-1 Bingo game built with Laravel. This game util
 4. Set up Pusher: Refer to this [site](https://pusher.com/)
 5. Copy `.env` file from `.env.example`: `cp .env.example .env`
 6. Set the required values for your system:
-    - `GAME_*`
     - `PUSHER_*={Value of pusher settings}`
     - `REDIS_*,`
 7. If you do not have `mysql` or `redis`, download them or use docker images to build the necessary environment.
