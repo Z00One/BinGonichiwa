@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class ServeLocal extends Command
 {
@@ -25,14 +27,46 @@ class ServeLocal extends Command
      */
     public function handle()
     {
-        $ip = $this->getLocalIpforWindow();
+        $ip = $this->getLocalIp();
+        if (!$ip) {
+            $this->error('Local IP address could not be found.');
+            return;
+        }
         $this->call('serve', ['--host' => $ip]);
     }
 
-    private function getLocalIpforWindow()
+    private function getLocalIp()
     {
-        $ipInfo = shell_exec("ipconfig");
-        preg_match('/Wireless LAN adapter Wi-Fi.*?IPv4 Address[\. ]*: ([\d\.]+)/s', $ipInfo, $matches);
-        return $matches[1];         
+        if (PHP_OS_FAMILY === 'Windows') {
+            $process = new Process(['ipconfig']);
+        } elseif (PHP_OS_FAMILY === 'Darwin') { // macOS
+            $process = new Process(['ifconfig', 'getifaddr', 'en0']);
+        } else {
+            $this->error('Unsupported OS.');
+            return null;
+        }
+
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
+        $output = $process->getOutput();
+
+        if (PHP_OS_FAMILY === 'Windows') {
+            if (preg_match('/IPv4 Address[\. ]*: ([\d\.]+)/', $output, $matches)) {
+                return $matches[1];
+            }
+        } else { // macOS
+            $outputLines = explode("\n", trim($output));
+            foreach ($outputLines as $line) {
+                if (filter_var($line, FILTER_VALIDATE_IP)) {
+                    return $line;
+                }
+            }
+        }
+
+        return null;
     }
 }
