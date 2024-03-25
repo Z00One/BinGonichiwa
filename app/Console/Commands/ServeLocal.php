@@ -40,7 +40,7 @@ class ServeLocal extends Command
         if (PHP_OS_FAMILY === 'Windows') {
             $process = new Process(['ipconfig']);
         } elseif (PHP_OS_FAMILY === 'Darwin') { // macOS
-            $process = new Process(['ifconfig', 'getifaddr', 'en0']);
+            $process = new Process(['ifconfig', 'en0']);
         } else {
             $this->error('Unsupported OS.');
             return null;
@@ -59,11 +59,8 @@ class ServeLocal extends Command
                 return $matches[1];
             }
         } else { // macOS
-            $outputLines = explode("\n", trim($output));
-            foreach ($outputLines as $line) {
-                if (filter_var($line, FILTER_VALIDATE_IP)) {
-                    return $line;
-                }
+            if (preg_match('/inet (\d+\.\d+\.\d+\.\d+)/', $output, $matches)) {
+                return $matches[1];
             }
         }
 
