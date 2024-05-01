@@ -47,5 +47,5 @@ BinGonichiwa は Laravel を利用したリアルタイム 1 対 1 ビンゴゲ�
 
 ## ETC
 
--   windowの環境なら、コンソールに `php artisan serve:local` コマンドを入力して、プライベート IP で serve することができます。
+-   WindowとMacの環境なら、コンソールに `php artisan serve:local` コマンドを入力して、プライベート IP で serve することができます。
 -   Bingonichiwa は日本語と英語に対応しています。
